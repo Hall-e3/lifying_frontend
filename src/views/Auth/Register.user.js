@@ -11,13 +11,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { InputAdornment } from "@mui/material";
+import { Alert, Collapse, IconButton, InputAdornment } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { registerData } from "../../actions/auth.actions";
 import { Spinner } from "../../components/Spinner/Spinner";
 import { CustomInput } from "../../components";
 import FormAction from "../../components/CustomForm/FormAction";
+import CloseIcon from "@material-ui/icons/Close";
 function Copyright(props) {
   return (
     <Typography
@@ -39,6 +40,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Register() {
+  const [open, setOpen] = React.useState(true);
   const {
     formData,
     showPassword,
@@ -47,8 +49,13 @@ export default function Register() {
     handleFormClear,
   } = FormAction();
   const dispatch = useDispatch();
-  const props = useSelector((state) => state.Auth);
-  console.log(props);
+  const { user, authError, register_user_loading } = useSelector(
+    (state) => state.Auth
+  );
+
+  console.log(user);
+  console.log(authError);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const { password, confirm_password } = formData;
@@ -60,6 +67,40 @@ export default function Register() {
     dispatch(registerData(formData));
     handleFormClear();
   };
+
+  const AlerT = ({ user, message, open, setOpen }) => (
+    <Box sx={{ width: "100%" }}>
+      <Collapse in={open}>
+        <Alert
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+          severity={user ? "success" : "error"}
+        >
+          {user ? user : message}
+        </Alert>
+      </Collapse>
+      {/* <Button
+        disabled={open}
+        variant="outlined"
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        Re-open
+      </Button> */}
+    </Box>
+  );
 
   return (
     <ThemeProvider theme={theme}>
@@ -79,6 +120,10 @@ export default function Register() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          {user && <AlerT user={user} open={open} setOpen={setOpen} />}
+          {authError && (
+            <AlerT message={authError} open={open} setOpen={setOpen} />
+          )}
           <Box
             component="form"
             noValidate
@@ -166,8 +211,7 @@ export default function Register() {
               size="large"
               onClick={handleSubmit}
             >
-              {/* {props.register_user_loading ? <Spinner /> : "Sign Up"} */}
-              Sign Up
+              {register_user_loading ? <Spinner /> : "Sign Up"}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>

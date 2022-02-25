@@ -25,7 +25,7 @@ export const registerData = (formData) => async (dispatch) => {
     if (error.response) {
       dispatch({
         type: USER_REGISTER_FAIL,
-        payload: error.response.data.message,
+        payload: error.response.data.message.message,
       });
     }
   }

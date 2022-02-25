@@ -9,12 +9,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { InputAdornment } from "@mui/material";
+import { Alert, InputAdornment } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { loginData } from "../../actions/auth.actions";
 import { Spinner } from "../../components/Spinner/Spinner";
 import FormAction from "../../components/CustomForm/FormAction";
 import { CustomInput } from "../../components";
+import { Collapse, IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 function Copyright(props) {
   return (
@@ -34,9 +36,43 @@ function Copyright(props) {
   );
 }
 
+const AlerT = ({ message, open, setOpen }) => (
+  <Box sx={{ width: "100%" }}>
+    <Collapse in={open}>
+      <Alert
+        action={
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        }
+        sx={{ mb: 2 }}
+      >
+        {message}
+      </Alert>
+    </Collapse>
+    {/* <Button
+        disabled={open}
+        variant="outlined"
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        Re-open
+      </Button> */}
+  </Box>
+);
+
 const theme = createTheme();
 
 export default function Login() {
+  const [open, setOpen] = React.useState(true);
   const {
     showPassword,
     handleShowPassword,
@@ -46,13 +82,15 @@ export default function Login() {
   } = FormAction();
   const dispatch = useDispatch();
   const props = useSelector((state) => state.Auth);
+  console.log(props);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(loginData(loginformData));
     handleFormClear();
   };
-
+  const message = props.authError;
+  console.log(message);
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -71,7 +109,7 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-
+          {message && <AlerT message={message} open={open} setOpen={setOpen} />}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -136,8 +174,7 @@ export default function Login() {
               sx={{ mt: 3, mb: 2 }}
               size="large"
             >
-              {/* {props.login_user_loading ? <Spinner /> : "Sign In"} */}
-              Sign In
+              {props.login_user_loading ? <Spinner /> : "Sign In"}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>

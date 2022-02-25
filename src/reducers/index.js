@@ -1,5 +1,5 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
+import Auth from "./auth.reducers";
+import posts from "./posts";
 
-import posts from './posts';
-
-export const reducers = combineReducers({ posts });
+export const reducers = combineReducers({ Auth, posts });

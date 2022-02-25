@@ -8,7 +8,7 @@ import {
   USER_CONFIRM_FAIL,
   USER_CONFIRM_LOADING,
   USER_CONFIRM_SUCCESS,
-} from "../Actions/types";
+} from "../actions/types";
 const initialState = {
   register_user_loading: false,
   login_user_loading: false,
@@ -40,7 +40,8 @@ export default function Auth(state = initialState, action) {
       };
     case USER_REGISTER_FAIL:
       return {
-        isLoading: false,
+        ...state,
+        register_user_loading: false,
         authError: action.payload,
       };
     case USER_LOGIN_LOADING:
@@ -62,7 +63,8 @@ export default function Auth(state = initialState, action) {
     case USER_LOGIN_FAIL:
       return {
         ...state,
-        isLoading: false,
+        // isLoading: false,
+        login_user_loading: false,
         authError: action.payload,
       };
 
